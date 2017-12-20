@@ -1,0 +1,24 @@
+{
+  "name": "wxapp-websocket",
+  "version": "1.0.0",
+  "description": "小程序websocket",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cytle/wxapp-websocket.git"
+  },
+  "keywords": [
+    "微信小程序",
+    "websocket",
+    "ws"
+  ],
+  "author": "xsp <canyoutle@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cytle/wxapp-websocket/issues"
+  },
+  "homepage": "https://github.com/cytle/wxapp-websocket#readme"
+}
