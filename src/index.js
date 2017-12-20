@@ -10,9 +10,16 @@ function isArray(o) {
 
 let globalWebsocket;
 
+/**
+ * 小程序 Websocket
+ * @param       {DOMString}             url       url
+ * @param       {DOMString|DOMString[]} protocols Optional 协议
+ * @constructor
+ */
 function WebSocket(url, protocols) {
   if (protocols) {
     if (isString(protocols)) {
+      /* eslint no-param-reassign: off */
       protocols = [protocols];
     } else if (!isArray(protocols)) {
       throw new DOMException(`Failed to construct 'WebSocket': The subprotocol '${protocols}' is invalid.`);
@@ -50,7 +57,6 @@ WebSocket.prototype.send = function send(data) {
     return;
   }
   if (this.readyState === WebSocket.CONNECTING) {
-    /* eslint no-console: "off" */
     throw new DOMException("Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.");
   }
   if (this.readyState !== WebSocket.OPEN) {
