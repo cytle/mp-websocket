@@ -2,9 +2,10 @@
   "name": "wxapp-websocket",
   "version": "1.0.0",
   "description": "小程序websocket",
-  "main": "index.js",
+  "main": "lib/index.js",
   "scripts": {
-    "build": "babel src/*.js -d .",
+    "build": "del lib && cd src && babel *.js -d ../lib",
+    "prepublish": "npm run build",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -27,6 +28,7 @@
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.6.1"
+    "babel-preset-env": "^1.6.1",
+    "del-cli": "^1.1.0"
   }
 }
