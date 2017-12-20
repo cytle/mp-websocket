@@ -4,6 +4,7 @@
   "description": "小程序websocket",
   "main": "index.js",
   "scripts": {
+    "build": "babel src/*.js -d .",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,5 +21,12 @@
   "bugs": {
     "url": "https://github.com/cytle/wxapp-websocket/issues"
   },
-  "homepage": "https://github.com/cytle/wxapp-websocket#readme"
+  "homepage": "https://github.com/cytle/wxapp-websocket#readme",
+  "dependencies": {
+    "debug": "^3.1.0"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1"
+  }
 }
