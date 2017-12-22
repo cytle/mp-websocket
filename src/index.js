@@ -1,14 +1,5 @@
-import socketGlobalEventHandle from './socketGlobalEventHandle';
-
-function isString(o) {
-  return typeof o === 'string';
-}
-
-function isArray(o) {
-  return Object.prototype.toString.call(o) === '[Object array]';
-}
-
-let globalWebsocket;
+import { isString, isArray, DOMExceptionError } from './utils';
+import { connectSocket } from './impls';
 
 /**
  * 小程序 Websocket
@@ -22,14 +13,22 @@ function WebSocket(url, protocols) {
       /* eslint no-param-reassign: off */
       protocols = [protocols];
     } else if (!isArray(protocols)) {
-      throw new DOMException(`Failed to construct 'WebSocket': The subprotocol '${protocols}' is invalid.`);
+      throw new DOMExceptionError(`Failed to construct 'WebSocket': The subprotocol '${protocols}' is invalid.`);
     }
   }
-  if (globalWebsocket) {
-    globalWebsocket.crash();
-  }
-  globalWebsocket = this;
-  socketGlobalEventHandle((event, res) => {
+
+  // binaryType
+  this.binaryType = '';
+  this.readyState = WebSocket.CONNECTING;
+  const options = {
+    url,
+    header: {
+      'content-type': 'application/json',
+    },
+    protocols,
+    method: 'GET',
+  };
+  const handler = (event, res) => {
     if (event === 'close') {
       this.readyState = WebSocket.CLOSED;
     } else if (event === 'open') {
@@ -38,54 +37,33 @@ function WebSocket(url, protocols) {
     if (this[`on${event}`]) {
       this[`on${event}`](res);
     }
-  });
-  // binaryType
-  this.binaryType = '';
-  this.readyState = WebSocket.CONNECTING;
-  wx.connectSocket({
-    url,
-    header: {
-      'content-type': 'application/json',
-    },
-    protocols,
-    method: 'GET',
-  });
+  };
+  this.$socket = connectSocket(
+    options,
+    this,
+    handler,
+  );
 }
 
 WebSocket.prototype.send = function send(data) {
-  if (globalWebsocket !== this) {
-    return;
-  }
   if (this.readyState === WebSocket.CONNECTING) {
-    throw new DOMException("Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.");
+    throw new DOMExceptionError("Failed to execute 'send' on 'WebSocket': Still in CONNECTING state.");
   }
   if (this.readyState !== WebSocket.OPEN) {
-    /* eslint no-console: "off" */
     console.error('WebSocket is already in CLOSING or CLOSED state.');
     return;
   }
-  wx.sendSocketMessage({
+  this.$socket.send({
     data,
   });
 };
 
 WebSocket.prototype.close = function close(code, reason) {
-  if (globalWebsocket !== this) {
-    return;
-  }
   this.readyState = WebSocket.CLOSING;
-
-  wx.closeSocket({
+  this.$socket.close({
     code,
     reason,
   });
-};
-
-WebSocket.prototype.crash = function crash() {
-  this.readyState = WebSocket.CLOSED;
-  if (this.onclose) {
-    this.onclose();
-  }
 };
 
 WebSocket.CONNECTING = 0; // The connection is not yet open.
