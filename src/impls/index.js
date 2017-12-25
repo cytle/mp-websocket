@@ -18,20 +18,12 @@ function socketEventHandle(handler, socketTask) {
   });
 }
 
-function singleMode(socketTask, instance, handler) {
-  socketEventHandle(handler, socketTask);
-}
-
-function globalMode(instance, handler) {
-  socketGlobalEventHandle(handler);
-}
-
 let globalWebsocket;
 
 function connectSocket(options, instance, handler) {
   let socketTask = wx.connectSocket(options);
   if (socketTask) {
-    singleMode(socketTask, instance, handler);
+    socketEventHandle(handler, socketTask);
   } else {
     if (globalWebsocket) {
       globalWebsocket.carsh();
@@ -51,7 +43,7 @@ function connectSocket(options, instance, handler) {
         wx.closeSocket(ops);
       },
     };
-    globalMode(socketTask, instance, handler);
+    socketGlobalEventHandle(handler);
   }
   return socketTask;
 }
