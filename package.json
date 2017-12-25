@@ -4,7 +4,7 @@
   "description": "小程序websocket",
   "main": "lib/index.js",
   "scripts": {
-    "build": "del lib && cd src && babel *.js */*.js -d ../lib",
+    "build": "del lib && cd src && babel *.js -d ../lib",
     "prepublish": "eslint src && npm run build",
     "test": "eslint src"
   },

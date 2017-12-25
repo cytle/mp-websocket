@@ -20,7 +20,7 @@ function socketEventHandle(handler, socketTask) {
 
 let globalWebsocket;
 
-function connectSocket(options, instance, handler) {
+export default function connectSocket(options, instance, handler) {
   let socketTask = wx.connectSocket(options);
   if (socketTask) {
     socketEventHandle(handler, socketTask);
@@ -47,8 +47,3 @@ function connectSocket(options, instance, handler) {
   }
   return socketTask;
 }
-
-export default {
-  connectSocket,
-  socketEventHandle,
-};

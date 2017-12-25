@@ -1,5 +1,5 @@
 import { isString, isArray, DOMExceptionError } from './utils';
-import { connectSocket } from './impls';
+import connectSocket from './connectSocket';
 
 /**
  * 小程序 Websocket
