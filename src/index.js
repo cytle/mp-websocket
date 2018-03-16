@@ -20,7 +20,7 @@ function WebSocket(url, protocols) {
   // binaryType
   this.binaryType = '';
   this.readyState = WebSocket.CONNECTING;
-  const options = {
+  this.$options = {
     url,
     header: {
       'content-type': 'application/json',
@@ -28,7 +28,7 @@ function WebSocket(url, protocols) {
     protocols,
     method: 'GET',
   };
-  const handler = (event, res) => {
+  this.$handler = (event, res) => {
     if (event === 'close') {
       this.readyState = WebSocket.CLOSED;
     } else if (event === 'open') {
@@ -38,11 +38,7 @@ function WebSocket(url, protocols) {
       this[`on${event}`](res);
     }
   };
-  this.$socket = connectSocket(
-    options,
-    this,
-    handler,
-  );
+  this.$socket = connectSocket(this);
 }
 
 WebSocket.prototype.send = function send(data) {
