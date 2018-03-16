@@ -5,17 +5,21 @@ let globalWebsocket;
 let nextGlobalWebsocket;
 const log = debug('socket.io-wxapp-client:connectSingleSocket');
 
-function createSingleSocketTask(instance) {
+export function createSingleSocketTask(instance) {
   return {
     send(ops) {
-      if (globalWebsocket === instance) {
-        wx.sendSocketMessage(ops);
+      if (globalWebsocket !== instance) {
+        log('error send', 'globalWebsocket !== instance', ops);
+        return;
       }
+      wx.sendSocketMessage(ops);
     },
     close(ops) {
       if (globalWebsocket !== instance) {
-        wx.closeSocket(ops);
+        log('error close', 'globalWebsocket !== instance', ops);
+        return;
       }
+      wx.closeSocket(ops);
     },
   };
 }
@@ -46,16 +50,16 @@ export default function connectSingleSocket(instance) {
         log('websocket onclose执行完毕');
         if (nextGlobalWebsocket) {
           log('nextGlobalWebsocket将连接');
+          setGlobalSocket(nextGlobalWebsocket);
           wx.connectSocket(nextGlobalWebsocket.$options);
-          setGlobalSocket(nextGlobalWebsocket, nextGlobalWebsocket.$handler);
           nextGlobalWebsocket = undefined;
         }
       };
     }
   } else {
     log('websocket将连接');
+    setGlobalSocket(instance);
     wx.connectSocket(instance.$options);
-    setGlobalSocket(instance, instance.$handler);
   }
 
   return createSingleSocketTask(instance);
