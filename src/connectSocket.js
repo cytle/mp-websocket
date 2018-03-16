@@ -23,6 +23,36 @@ function socketEventHandle(handler, socketTask) {
 
 let globalWebsocket;
 
+function getGlobalSocketTask(instance) {
+  return {
+    send(ops) {
+      if (globalWebsocket !== instance) {
+        return;
+      }
+      wx.sendSocketMessage(ops);
+    },
+    close(ops) {
+      if (globalWebsocket !== instance) {
+        return;
+      }
+      wx.closeSocket(ops);
+    },
+  };
+}
+
+
+function realConnectSocket(options, instance, handler) {
+  const socketTask = wx.connectSocket(options);
+  if (socketTask) {
+    log('single, 有返回socketTask, 多socket');
+    socketEventHandle(handler, socketTask);
+    return socketTask;
+  }
+  globalWebsocket = instance;
+  socketGlobalEventHandle(handler);
+  return getGlobalSocketTask(instance);
+}
+
 /**
  * 创建websocket链接，支持旧版本全局实例和新版本多实例
  * @param  {Object} options   websocket参数
@@ -32,32 +62,19 @@ let globalWebsocket;
  * 局方法
  */
 export default function connectSocket(options, instance, handler) {
-  let socketTask = wx.connectSocket(options);
-  if (socketTask) {
-    log('single, 有返回socketTask, 多socket');
-    socketEventHandle(handler, socketTask);
-  } else {
-    log('global, 单socket');
-    if (globalWebsocket) {
-      // 摧毁之前全局实例 TODO 测试
-      globalWebsocket.carsh();
-    }
-    globalWebsocket = instance;
-    socketTask = {
-      send(ops) {
-        if (globalWebsocket !== instance) {
-          return;
-        }
-        wx.sendSocketMessage(ops);
-      },
-      close(ops) {
-        if (globalWebsocket !== instance) {
-          return;
-        }
-        wx.closeSocket(ops);
-      },
+  // 如果有globalWebsocket则认为是单连接情况
+  if (globalWebsocket) {
+    const { onclose } = globalWebsocket;
+    globalWebsocket.onclose = function close(res) {
+      wx.connectSocket(options);
+      globalWebsocket = instance;
+      socketGlobalEventHandle(handler);
+      if (onclose) {
+        onclose.call(this, res);
+      }
     };
-    socketGlobalEventHandle(handler);
+    globalWebsocket.close();
+    return getGlobalSocketTask(instance);
   }
-  return socketTask;
+  return realConnectSocket(options, instance, handler);
 }

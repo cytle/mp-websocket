@@ -60,6 +60,9 @@ WebSocket.prototype.send = function send(data) {
 
 WebSocket.prototype.close = function close(code, reason) {
   this.readyState = WebSocket.CLOSING;
+  if (!this.$socket) {
+    throw new DOMExceptionError("Failed to execute 'close' on 'WebSocket': instance is undefined.");
+  }
   this.$socket.close({
     code,
     reason,
