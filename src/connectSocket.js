@@ -66,9 +66,9 @@ export default function connectSocket(options, instance, handler) {
   if (globalWebsocket) {
     const { onclose } = globalWebsocket;
     globalWebsocket.onclose = function close(res) {
-      wx.connectSocket(options);
       globalWebsocket = instance;
       socketGlobalEventHandle(handler);
+      wx.connectSocket(options);
       if (onclose) {
         onclose.call(this, res);
       }
