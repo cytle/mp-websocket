@@ -17,6 +17,7 @@ export function createSingleSocketTask(instance) {
     close(ops) {
       if (globalWebsocket !== instance) {
         log('error close', 'globalWebsocket !== instance', ops);
+        instance.$handler('close');
         return;
       }
       wx.closeSocket(ops);
