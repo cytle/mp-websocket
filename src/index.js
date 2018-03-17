@@ -41,7 +41,12 @@ function WebSocket(url, protocols) {
       this[`on${event}`](res);
     }
   };
-  this.$socket = connectSocket(this);
+  try {
+    this.$socket = connectSocket(this);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 WebSocket.prototype.send = function send(data) {

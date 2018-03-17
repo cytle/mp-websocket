@@ -1,7 +1,7 @@
 import debug from 'debug';
 
 const log = debug('socket.io-wxapp-client:socketGlobalEventHandle');
-let isInitSocketGlobalEvent = false;
+let needListen = true;
 
 const defaultGloableEventHandler = (...args) => {
   log('没有socket全局处理事件 %O', args);
@@ -9,6 +9,26 @@ const defaultGloableEventHandler = (...args) => {
 
 // 全局事件接受者
 let gloableEventHandler;
+
+const listeners = {
+  // 绑定全局监听initListen
+  SocketOpen() {
+    gloableEventHandler('open');
+  },
+
+  SocketError(res) {
+    gloableEventHandler('error', res);
+  },
+
+  SocketClose() {
+    gloableEventHandler('close');
+  },
+
+  SocketMessage(res) {
+    log('message', res);
+    gloableEventHandler('message', res);
+  },
+};
 
 /**
  * 监听小程序socket全局的事件
@@ -20,26 +40,20 @@ export default function socketGlobalEventHandle(handler = defaultGloableEventHan
 
   gloableEventHandler = handler;
 
-  if (isInitSocketGlobalEvent) {
+  if (!needListen) {
     return;
   }
-  isInitSocketGlobalEvent = true;
 
-  // 绑定全局监听initListen
-  wx.onSocketOpen(() => {
-    gloableEventHandler('open');
-  });
-
-  wx.onSocketError((res) => {
-    gloableEventHandler('error', res);
-  });
-
-  wx.onSocketClose(() => {
-    gloableEventHandler('close');
-  });
-
-  wx.onSocketMessage((res) => {
-    log('message', res);
-    gloableEventHandler('message', res);
-  });
+  if (wx.offSocketOpen) {
+    // fix 支付宝每次连接都需要重新注册订阅
+    Object.keys(listeners).forEach((key) => {
+      wx[`off${key}`](listeners[key]);
+      wx[`on${key}`](listeners[key]);
+    });
+  } else {
+    needListen = false;
+    Object.keys(listeners).forEach((key) => {
+      wx[`on${key}`](listeners[key]);
+    });
+  }
 }
