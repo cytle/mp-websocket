@@ -1,6 +1,7 @@
 import { isString, isArray, DOMExceptionError } from './utils';
 import connectSocket from './connectSocket';
 
+let id = 0;
 /**
  * 小程序 Websocket
  * @param       {DOMString}             url       url
@@ -20,6 +21,8 @@ function WebSocket(url, protocols) {
   // binaryType
   this.binaryType = '';
   this.readyState = WebSocket.CONNECTING;
+  this.$id = id;
+  id += 1;
   this.$options = {
     url,
     header: {

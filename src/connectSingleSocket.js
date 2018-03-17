@@ -72,6 +72,7 @@ function connect(instance) {
       popGlobal();
     }
   };
+  globalWebsocket.close();
 }
 
 export default function connectSingleSocket(instance) {
