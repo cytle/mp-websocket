@@ -5,6 +5,21 @@ let globalWebsocket;
 let nextGlobalWebsocket;
 const log = debug('socket.io-wxapp-client:connectSingleSocket');
 
+export function setGlobalSocket(instance) {
+  globalWebsocket = instance;
+  socketGlobalEventHandle(instance.$handler);
+}
+
+export function hasSingleSocket() {
+  return !!globalWebsocket;
+}
+
+function popGlobal() {
+  setGlobalSocket(nextGlobalWebsocket);
+  wx.connectSocket(nextGlobalWebsocket.$options);
+  nextGlobalWebsocket = undefined;
+}
+
 export function createSingleSocketTask(instance) {
   return {
     send(ops) {
@@ -20,25 +35,23 @@ export function createSingleSocketTask(instance) {
         instance.$handler('close');
         return;
       }
-      wx.closeSocket(ops);
+
+      wx.closeSocket(Object.assign({
+        success(res) {
+          console.log('closeSocket success', res);
+          if (nextGlobalWebsocket) {
+            console.log('nextGlobalWebsocket将连接');
+            popGlobal();
+          }
+        },
+        fail(err) {
+          console.log('closeSocket fail', err);
+        },
+      }, ops));
     },
   };
 }
 
-export function setGlobalSocket(instance) {
-  globalWebsocket = instance;
-  socketGlobalEventHandle(instance.$handler);
-}
-
-export function hasSingleSocket() {
-  return !!globalWebsocket;
-}
-
-function popGlobal() {
-  setGlobalSocket(nextGlobalWebsocket);
-  wx.connectSocket(nextGlobalWebsocket.$options);
-  nextGlobalWebsocket = undefined;
-}
 
 function connect(instance) {
   if (nextGlobalWebsocket) {
@@ -60,19 +73,6 @@ function connect(instance) {
     return;
   }
 
-  log('nextGlobalWebsocket将在当前socket断开后被连接');
-  const { onclose } = globalWebsocket;
-  globalWebsocket.onclose = function close(res) {
-    log('当前websocket断开连接');
-    if (onclose) {
-      onclose.call(this, res);
-    }
-    log('websocket onclose执行完毕');
-    if (nextGlobalWebsocket) {
-      log('nextGlobalWebsocket将连接');
-      popGlobal();
-    }
-  };
   globalWebsocket.close();
 }
 
