@@ -16,7 +16,7 @@ let gloableEventHandler;
  */
 export default function socketGlobalEventHandle(handler = defaultGloableEventHandler) {
   // 设置全局事件接受者
-  console.log('websocket设置全局事件接受者', handler);
+  log('websocket设置全局事件接受者', handler);
 
   gloableEventHandler = handler;
 
