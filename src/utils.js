@@ -1,6 +1,9 @@
 function isMy() {
   return typeof my !== 'undefined';
 }
+
+const apis = isMy() ? my : wx;
+
 function isString(o) {
   return typeof o === 'string';
 }
@@ -20,6 +23,7 @@ export default {
   isArray,
   DOMExceptionError,
   isMy,
+  apis,
 };
 
 export {
@@ -27,4 +31,5 @@ export {
   isArray,
   DOMExceptionError,
   isMy,
+  apis,
 };

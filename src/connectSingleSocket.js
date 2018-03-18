@@ -1,5 +1,6 @@
 import debug from 'debug';
 import socketGlobalEventHandle from './socketGlobalEventHandle';
+import { apis } from './utils';
 
 let globalWebsocket;
 let nextGlobalWebsocket;
@@ -15,7 +16,7 @@ export function hasSingleSocket() {
 }
 
 function popGlobal() {
-  wx.connectSocket(nextGlobalWebsocket.$options);
+  apis.connectSocket(nextGlobalWebsocket.$options);
   setGlobalSocket(nextGlobalWebsocket);
   nextGlobalWebsocket = undefined;
 }
@@ -27,7 +28,7 @@ export function createSingleSocketTask(instance) {
         log('error send', 'globalWebsocket !== instance', ops);
         return;
       }
-      wx.sendSocketMessage(ops);
+      apis.sendSocketMessage(ops);
     },
     close(ops) {
       if (globalWebsocket !== instance) {
@@ -36,7 +37,7 @@ export function createSingleSocketTask(instance) {
         return;
       }
 
-      wx.closeSocket(Object.assign({
+      apis.closeSocket(Object.assign({
         success(res) {
           log('closeSocket success', res);
           if (nextGlobalWebsocket) {
