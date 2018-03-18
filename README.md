@@ -1,4 +1,4 @@
-# wxapp-websocket
+# mp-websocket
 
 小程序`websocket`实现
 
@@ -10,3 +10,7 @@
 > [小程序socket文档](https://mp.weixin.qq.com/debug/wxadoc/dev/api/network-socket.html)
 
 本项目两种模式都支持，不过在单连接版本下，只能连接一个。
+
+### 2. 支付宝和微信小程序
+
+本项目都支持
