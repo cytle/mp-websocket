@@ -1,7 +1,7 @@
 import debug from 'debug';
 import { isMy } from './utils';
 
-const log = debug('socket.io-wxapp-client:socketGlobalEventHandle');
+const log = debug('websocket:socketGlobalEventHandle');
 let isInitSocketGlobalEvent = false;
 
 const defaultGloableEventHandler = (...args) => {

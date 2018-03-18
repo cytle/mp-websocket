@@ -2,7 +2,7 @@ import debug from 'debug';
 import connectSingleSocket, { hasSingleSocket, createSingleSocketTask, setGlobalSocket } from './connectSingleSocket';
 import { isMy, apis } from './utils';
 
-const log = debug('socket.io-wxapp-client:connectSocket');
+const log = debug('websocket:connectSocket');
 
 function socketEventHandle(handler, socketTask) {
   socketTask.onOpen(() => {

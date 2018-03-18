@@ -4,7 +4,7 @@ import { apis } from './utils';
 
 let globalWebsocket;
 let nextGlobalWebsocket;
-const log = debug('socket.io-wxapp-client:connectSingleSocket');
+const log = debug('websocket:connectSingleSocket');
 
 export function setGlobalSocket(instance) {
   globalWebsocket = instance;
