@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/cytle/wxapp-websocket.git"
+    "url": "git+https://github.com/cytle/mp-websocket.git"
   },
   "keywords": [
     "小程序",
@@ -22,9 +22,9 @@
   "author": "xsp <canyoutle@gmail.com>",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/cytle/wxapp-websocket/issues"
+    "url": "https://github.com/cytle/mp-websocket/issues"
   },
-  "homepage": "https://github.com/cytle/wxapp-websocket#readme",
+  "homepage": "https://github.com/cytle/mp-websocket#readme",
   "dependencies": {
     "debug": "^3.1.0"
   },
