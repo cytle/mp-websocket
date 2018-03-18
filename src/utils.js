@@ -1,3 +1,6 @@
+function isMy() {
+  return typeof my !== 'undefined';
+}
 function isString(o) {
   return typeof o === 'string';
 }
@@ -16,10 +19,12 @@ export default {
   isString,
   isArray,
   DOMExceptionError,
+  isMy,
 };
 
 export {
   isString,
   isArray,
   DOMExceptionError,
+  isMy,
 };

@@ -1,4 +1,5 @@
 import debug from 'debug';
+import { isMy } from './utils';
 
 const log = debug('socket.io-wxapp-client:socketGlobalEventHandle');
 let needListen = true;
@@ -43,17 +44,8 @@ export default function socketGlobalEventHandle(handler = defaultGloableEventHan
   if (!needListen) {
     return;
   }
-
-  if (wx.offSocketOpen) {
-    // fix 支付宝每次连接都需要重新注册订阅
-    Object.keys(listeners).forEach((key) => {
-      wx[`off${key}`](listeners[key]);
-      wx[`on${key}`](listeners[key]);
-    });
-  } else {
-    needListen = false;
-    Object.keys(listeners).forEach((key) => {
-      wx[`on${key}`](listeners[key]);
-    });
-  }
+  Object.keys(listeners).forEach((key) => {
+    wx[`on${key}`](listeners[key]);
+  });
+  needListen = isMy();
 }
