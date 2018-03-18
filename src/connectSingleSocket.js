@@ -15,8 +15,8 @@ export function hasSingleSocket() {
 }
 
 function popGlobal() {
-  setGlobalSocket(nextGlobalWebsocket);
   wx.connectSocket(nextGlobalWebsocket.$options);
+  setGlobalSocket(nextGlobalWebsocket);
   nextGlobalWebsocket = undefined;
 }
 

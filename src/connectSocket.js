@@ -1,5 +1,6 @@
 import debug from 'debug';
 import connectSingleSocket, { hasSingleSocket, createSingleSocketTask, setGlobalSocket } from './connectSingleSocket';
+import { isMy } from './utils';
 
 const log = debug('socket.io-wxapp-client:connectSocket');
 
@@ -27,7 +28,7 @@ function socketEventHandle(handler, socketTask) {
  * 局方法
  */
 export default function connectSocket(instance) {
-  if (hasSingleSocket()) {
+  if (isMy() || hasSingleSocket()) {
     return connectSingleSocket(instance);
   }
   const socketTask = wx.connectSocket(instance.$options);
