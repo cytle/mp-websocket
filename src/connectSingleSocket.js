@@ -38,14 +38,14 @@ export function createSingleSocketTask(instance) {
 
       wx.closeSocket(Object.assign({
         success(res) {
-          console.log('closeSocket success', res);
+          log('closeSocket success', res);
           if (nextGlobalWebsocket) {
-            console.log('nextGlobalWebsocket将连接');
+            log('nextGlobalWebsocket将连接');
             popGlobal();
           }
         },
         fail(err) {
-          console.log('closeSocket fail', err);
+          log('closeSocket fail', err);
         },
       }, ops));
     },
